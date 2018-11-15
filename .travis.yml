@@ -5,6 +5,7 @@ jdk:
 
 script:
   ## runs both regular tests and sbt-scripted integration tests
+  - sbt publishLocal
   - sbt -Dfile.encoding=UTF8 test scripted
 
 sudo: false

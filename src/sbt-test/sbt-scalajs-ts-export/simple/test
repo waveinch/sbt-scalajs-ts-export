@@ -1,6 +1,5 @@
 # check if the type mapping file gets created
-> generateTypescript
-$ exists target/test.d.ts
-# check if the package.json file gets created
-> generatePackage
-$ exists target/package.json
+> packageTs
+$ exists target/web/js/test.d.ts
+$ exists target/web/js/package.json
+$ exists target/web/js/test.js

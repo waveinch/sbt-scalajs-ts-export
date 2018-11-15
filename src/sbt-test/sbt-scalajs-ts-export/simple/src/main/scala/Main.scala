@@ -13,7 +13,7 @@ object Api{
   def test(s:String):String = "test"
 
   @TSExport
-  val test2:Double = "test2"
+  val test2:Double = 1.0
 
 }
 
