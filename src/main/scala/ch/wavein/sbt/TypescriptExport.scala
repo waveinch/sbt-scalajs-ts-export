@@ -10,7 +10,7 @@ object TypescriptExport {
   def apply(sources: Seq[Source]):String = {
 
     def definedTypes():Seq[String] = {
-      sources.flatMap(_.stats).filter{
+      sources.flatMap(skipPackage).filter{
         case cls:Defn.Class => filterMod(cls.mods)
         case _ => false
       }.map{case cls:Defn.Class => cls.name.value}
@@ -34,8 +34,12 @@ object TypescriptExport {
       case "Int" | "Double" | "Long" => "number"
       case "Optional" => "?"
       case "Seq" | "List" => "Array"
+      case "Promise" => "Promise"
       case s:String if definedTypes().contains(s) => s
-      case _=> "any"
+      case _=> {
+        println(s"not found type: $t, known types are: ${definedTypes()}")
+        "any"
+      }
     }
 
     def toName(n:Type):Option[String] = n match {

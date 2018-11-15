@@ -133,4 +133,44 @@ class TypescriptExportSpec extends FlatSpec with Matchers {
 
 
   }
+
+  it should "support promises and complex types" in {
+    val program =
+      """
+        |package com.teamdatalog.client.core.api
+        |
+        |import ch.wavein.typescript.TSExport
+        |
+        |import scala.scalajs.js.Promise
+        |import scala.scalajs.js.annotation.{JSExportAll, JSExportTopLevel}
+        |
+        |@JSExportTopLevel("Configuration")
+        |@JSExportAll
+        |@TSExport
+        |object Configuration {
+        |
+        |  @TSExport
+        |  def fetch():Promise[ConfigurationVM] = ???
+        |
+        |}
+        |
+        |@TSExport
+        |case class ConfigurationVM(title:String)
+        |
+      """.stripMargin
+
+      val tree = program.parse[Source].get
+
+      println(TypescriptExport(Seq(tree)))
+
+      TypescriptExport(Seq(tree)) shouldBe """
+                                             |export interface Configuration{
+                                             |  fetch():Promise<ConfigurationVM>;
+                                             |}
+                                             |
+                                             |export interface ConfigurationVM{
+                                             |  title:string;
+                                             |}
+                                           """.stripMargin.trim
+  }
 }
