@@ -19,6 +19,10 @@ object TypescriptExport {
     def toType(typ:Type,prefix:Boolean = true):String = {
       var pre = {if(prefix) ":"  else "" }
       typ match {
+        case t:Type.Function => {
+          val params = t.params.map(toType(_,false)).zipWithIndex.map{ case (p,i) => s"x$i:$p"}.mkString("(",",",")")
+          pre + s"$params => ${toType(t.res, false)}"
+        }
         case t:Type.Name =>  pre + typeMapping(t.value)
         case t:Type.Apply => {
           toType(t.tpe,false) match {
@@ -26,6 +30,7 @@ object TypescriptExport {
             case parentType:String => pre + parentType + "<" + t.args.map(toType(_,false)).mkString(",") + ">"
           }
         }
+        case t:Type.Select => toType(t.name,prefix)
       }
     }
 

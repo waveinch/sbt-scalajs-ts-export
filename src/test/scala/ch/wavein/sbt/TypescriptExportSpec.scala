@@ -173,4 +173,123 @@ class TypescriptExportSpec extends FlatSpec with Matchers {
                                              |}
                                            """.stripMargin.trim
   }
+
+
+
+  "Lambda function" should "be valid" in {
+    val program =
+      """
+        |@TSExport
+        |object Test {
+        |
+        |  @TSExport
+        |  def bind(getItemJs:String => String) {
+        |  }
+        |}
+      """.stripMargin
+
+    val tree = program.parse[Source].get
+
+    println(TypescriptExport(Seq(tree)))
+
+    TypescriptExport(Seq(tree)) shouldBe """
+                                           |export interface Test{
+                                           |  bind(getItemJs:(x0:string) => string):any;
+                                           |}
+                                         """.stripMargin.trim
+  }
+
+  it should "trasform promise functions" in {
+
+    val program =
+      """
+        |@TSExport
+        |object Test {
+        |
+        |  @TSExport
+        |  def bind(getItemJs:String => js.Promise[String]) {
+        |  }
+        |}
+      """.stripMargin
+
+    val tree = program.parse[Source].get
+
+    println(TypescriptExport(Seq(tree)))
+
+    TypescriptExport(Seq(tree)) shouldBe """
+                                           |export interface Test{
+                                           |  bind(getItemJs:(x0:string) => Promise<string>):any;
+                                           |}
+                                         """.stripMargin.trim
+
+
+  }
+
+  it should "trasform promise custom type functions" in {
+
+    val program =
+      """
+        |@TSExport
+        |object Test {
+        |
+        |  @TSExport
+        |  def bind(getItemJs:Conf => js.Promise[Conf]) {
+        |  }
+        |}
+        |
+        |@TSExport
+        |case class Conf(title:String)
+      """.stripMargin
+
+    val tree = program.parse[Source].get
+
+    println(TypescriptExport(Seq(tree)))
+
+    TypescriptExport(Seq(tree)) shouldBe
+      """
+        |export interface Test{
+        |  bind(getItemJs:(x0:Conf) => Promise<Conf>):any;
+        |}
+        |
+        |export interface Conf{
+        |  title:string;
+        |}
+      """.stripMargin.trim
+  }
+
+  it should "export a real case" in {
+      val program =
+        """
+          |
+          |
+          |
+          |@TSExport
+          |object Init {
+          |
+          |  @TSExport
+          |  def bind(
+          |    getItemJs:String => js.Promise[String],
+          |    setItemJs:(String,String) => js.Promise[Unit],
+          |    removeItemJs: String => js.Promise[Unit]
+          |           ): Unit = {
+          |    ???
+          |  }
+          |}
+          |
+          |
+          |
+        """.stripMargin
+
+      val tree = program.parse[Source].get
+
+      println(TypescriptExport(Seq(tree)))
+
+      TypescriptExport(Seq(tree)) shouldBe """
+                                             |export interface Init{
+                                             |  bind(getItemJs:(x0:string) => Promise<string>,setItemJs:(x0:string,x1:string) => Promise<any>,removeItemJs:(x0:string) => Promise<any>):any;
+                                             |}
+                                           """.stripMargin.trim
+    }
+
+
 }
