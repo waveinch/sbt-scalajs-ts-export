@@ -36,6 +36,7 @@ object TypescriptExport {
 
     def typeMapping(t:String):String = t match {
       case "String" => "string"
+      case "Boolean" => "boolean"
       case "Int" | "Double" | "Long" => "number"
       case "Optional" => "?"
       case "Seq" | "List" => "Array"

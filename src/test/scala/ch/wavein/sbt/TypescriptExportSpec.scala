@@ -44,6 +44,22 @@ class TypescriptExportSpec extends FlatSpec with Matchers {
                                          """.stripMargin.trim
   }
 
+  it should "support boolean" in {
+    val program =
+      """
+        |@TSExport
+        |case class Test(a:Boolean,b:String)
+        |""".stripMargin
+    val tree = program.parse[Source].get
+
+    TypescriptExport(Seq(tree)) shouldBe """
+                                           |export interface Test{
+                                           |  a:boolean;
+                                           |  b:string;
+                                           |}
+                                         """.stripMargin.trim
+  }
+
   it should "be exported when complex types are used" in {
     val program =
       """
@@ -290,6 +306,7 @@ class TypescriptExportSpec extends FlatSpec with Matchers {
                                              |}
                                            """.stripMargin.trim
     }
+
 
 
 }
