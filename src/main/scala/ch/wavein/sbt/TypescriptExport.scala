@@ -59,6 +59,30 @@ object TypescriptExport {
       case _ => false
     }
 
+    def consts(obj:Defn.Object):Option[String] = {
+
+      def filterJsExpAll(ann:Mod.Annot) = toName(ann.init.tpe).contains("JSExportTopLevel")
+
+      def arg(ann:Mod.Annot):Option[String] = {
+        ann.init.argss.headOption.flatMap(_.headOption).flatMap{
+            case l:Lit.String => Some(l.value)
+            case _ => None
+        }
+      }
+
+
+      val jsExpAll = obj.mods.filter{
+        case ann:Mod.Annot => filterJsExpAll(ann)
+        case _ => false
+      }
+      jsExpAll.flatMap{
+        case ann:Mod.Annot => arg(ann)
+        case _ => None
+      }.headOption
+
+
+    }
+
     def filterTs(stats:Seq[Stat]):Seq[Stat] = {
 
       stats.filter{
@@ -70,11 +94,24 @@ object TypescriptExport {
       }
     }
 
+    def generateConst(stat:Stat):String = {
+      val termsToExport = stat match {
+        case o: Defn.Object => consts(o).map(a => (o,a))
+        case _ => None
+      }
+
+      termsToExport.map{case (obj,ann) =>
+        s"export const ${ann}:${obj.name.value};"
+      }.mkString;
+
+    }
+
     def generateInterface(stat:Stat):String = {
       val name:String = stat match {
         case o:Defn.Object => o.name.value
         case o:Defn.Class => o.name.value
       }
+
 
       val termsToExport: Seq[Tree] = stat match {
         case o:Defn.Object => filterTs(o.templ.stats)
@@ -123,7 +160,14 @@ object TypescriptExport {
       }
     }
 
-    filterTs(sources.flatMap(skipPackage)).map(generateInterface).mkString("\n\n")
+    filterTs(sources.flatMap(skipPackage)).map{ stat =>
+      s"""
+         |${generateInterface(stat)}
+         |
+         |${generateConst(stat)}
+         |
+       """.stripMargin.trim
+    }.mkString("\n\n")
 
 
   }

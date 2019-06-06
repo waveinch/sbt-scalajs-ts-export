@@ -9,6 +9,7 @@ class TypescriptExportSpec extends FlatSpec with Matchers {
     val program =
       """
         |@TSExport
+        |@JSExportTopLevel("SJSApi")
         |object Api{
         |
         | @TSExport
@@ -25,6 +26,8 @@ class TypescriptExportSpec extends FlatSpec with Matchers {
         |  test(s:string):string;
         |  test2:number;
         |}
+        |
+        |export const SJSApi:Api;
       """.stripMargin.trim
   }
 
@@ -128,7 +131,7 @@ class TypescriptExportSpec extends FlatSpec with Matchers {
         |@JSExportTopLevel("Configuration")
         |@JSExportAll
         |@TSExport
-        |object Configuration {
+        |object ConfigurationSJS {
         |    @TSExport
         |    def getSimple():String = "config"
         |    @TSExport
@@ -141,10 +144,12 @@ class TypescriptExportSpec extends FlatSpec with Matchers {
       println(TypescriptExport(Seq(tree)))
 
       TypescriptExport(Seq(tree)) shouldBe """
-                                             |export interface Configuration{
+                                             |export interface ConfigurationSJS{
                                              |  getSimple():string;
                                              |  getSimple2():string;
                                              |}
+                                             |
+                                             |export const Configuration:ConfigurationSJS;
                                            """.stripMargin.trim
 
 
@@ -163,7 +168,7 @@ class TypescriptExportSpec extends FlatSpec with Matchers {
         |@JSExportTopLevel("Configuration")
         |@JSExportAll
         |@TSExport
-        |object Configuration {
+        |object ConfigurationSJS {
         |
         |  @TSExport
         |  def fetch():Promise[ConfigurationVM] = ???
@@ -180,9 +185,11 @@ class TypescriptExportSpec extends FlatSpec with Matchers {
       println(TypescriptExport(Seq(tree)))
 
       TypescriptExport(Seq(tree)) shouldBe """
-                                             |export interface Configuration{
+                                             |export interface ConfigurationSJS{
                                              |  fetch():Promise<ConfigurationVM>;
                                              |}
+                                             |
+                                             |export const Configuration:ConfigurationSJS;
                                              |
                                              |export interface ConfigurationVM{
                                              |  title:string;

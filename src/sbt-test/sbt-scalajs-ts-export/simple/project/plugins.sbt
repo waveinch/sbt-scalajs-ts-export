@@ -1,7 +1,10 @@
 {
-  val pluginVersion = System.getProperty("plugin.version")
-  if(pluginVersion == null)
-    throw new RuntimeException("""|The system property 'plugin.version' is not defined.
-                                  |Specify this property using the scriptedLaunchOpts -D.""".stripMargin)
-  else addSbtPlugin("ch.wavein" % """sbt-scalajs-ts-export""" % pluginVersion)
+  val pluginVersion =
+  if(System.getProperty("plugin.version") == null) {
+    "0.3"
+  } else {
+    System.getProperty("plugin.version")
+  }
+
+  addSbtPlugin("ch.wavein" % """sbt-scalajs-ts-export""" % pluginVersion)
 }

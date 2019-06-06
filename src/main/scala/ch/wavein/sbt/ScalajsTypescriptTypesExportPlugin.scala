@@ -11,7 +11,7 @@ import scala.meta.internal.tokenizers.PlatformTokenizerCache
 
 object ScalajsTypescriptTypesExportPlugin extends AutoPlugin {
 
-  private val pluginVersion = "0.1-SNAPSHOT"
+  private val pluginVersion = "0.2"
 
   override def trigger = allRequirements
   override def requires = ScalaJSPlugin
@@ -29,7 +29,7 @@ object ScalajsTypescriptTypesExportPlugin extends AutoPlugin {
   override lazy val projectSettings = Seq(
     artifactPath in fastOptJS in Compile := outputDir.value / (jsOutputName.value + ".js"),
     artifactPath in fullOptJS in Compile := outputDir.value / (jsOutputName.value + ".js"),
-    scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
+    scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.ESModule) },
     scalaJSUseMainModuleInitializer := false,
     libraryDependencies ++= Seq("ch.wavein" %% """scalajs-ts-export""" % pluginVersion),
     outputDir := (baseDirectory in Compile).value / "target" / "web" / "js",
@@ -64,7 +64,7 @@ object ScalajsTypescriptTypesExportPlugin extends AutoPlugin {
       outputFile
     },
     packageTs := Def.sequential(
-      (fullOptJS in Compile),
+      (fastOptJS in Compile),
       generatePackage,
       generateTypescript
     ).value
