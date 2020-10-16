@@ -11,7 +11,7 @@ import scala.meta.internal.tokenizers.PlatformTokenizerCache
 
 object ScalajsTypescriptTypesExportPlugin extends AutoPlugin {
 
-  private val pluginVersion = "0.2"
+  private val pluginVersion = "0.4"
 
   override def trigger = allRequirements
   override def requires = ScalaJSPlugin

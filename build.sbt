@@ -4,7 +4,7 @@ val baseName = "scalajs-ts-export"
 
 lazy val commonSettings = Seq(
   organization := "ch.wavein",
-  version := "0.3.1",
+  version := "0.4",
   bintrayPackageLabels := Seq("sbt","plugin"),
   bintrayVcsUrl := Some("""git@github.com:waveinch/sbt-scalajs-ts-export.git"""),
   bintrayOrganization := Some("waveinch"),
