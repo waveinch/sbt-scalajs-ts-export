@@ -1,7 +1,7 @@
 language: scala
 
 jdk:
-  - oraclejdk9
+  - oraclejdk8
 
 script:
   ## runs both regular tests and sbt-scripted integration tests
@@ -14,7 +14,7 @@ sudo: false
 addons:
   apt:
     packages:
-      - oracle-java9-installer
+      - oracle-java8-installer
 
 before_cache:
   # Tricks to avoid unnecessary cache updates
