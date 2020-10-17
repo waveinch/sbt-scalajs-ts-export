@@ -7,7 +7,6 @@ import sbt.Keys._
 
 import scala.meta._
 import scala.meta.internal.parsers.ScalametaParser
-import scala.meta.internal.tokenizers.PlatformTokenizerCache
 
 object ScalajsTypescriptTypesExportPlugin extends AutoPlugin {
 
@@ -37,11 +36,10 @@ object ScalajsTypescriptTypesExportPlugin extends AutoPlugin {
     (crossTarget in fastOptJS) := outputDir.value,
     jsOutputName := name.value,
     generateTypescript := {
-      PlatformTokenizerCache.megaCache.clear()
       val outputFile = outputDir.value / (jsOutputName.value + ".d.ts")
       val sources:Seq[Source] = (unmanagedSources in Compile).value.map { file =>
-        // Workaround for https://github.com/scalameta/scalameta/issues/874
-        new ScalametaParser(Input.File(file), dialects.ParadiseTypelevel212).parseSource()
+        // see: https://github.com/scalameta/scalameta/pull/2044
+        new ScalametaParser(Input.File(file), dialects.Scala).parseSource()
       }
 
       val content = TypescriptExport(sources)
