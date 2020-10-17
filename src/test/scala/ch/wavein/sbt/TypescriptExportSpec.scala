@@ -1,10 +1,13 @@
 package ch.wavein.sbt
 
 import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.meta._
 
-class TypescriptExportSpec extends FlatSpec with Matchers {
+class TypescriptExportSpec extends AnyFlatSpec {
+  import matchers.should.Matchers._
+
   "Object" should "be exported in typescript" in {
     val program =
       """

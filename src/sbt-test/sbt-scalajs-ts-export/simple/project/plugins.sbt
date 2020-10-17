@@ -1,7 +1,7 @@
 {
   val pluginVersion =
   if(System.getProperty("plugin.version") == null) {
-    "0.3"
+    "0.4"
   } else {
     System.getProperty("plugin.version")
   }
