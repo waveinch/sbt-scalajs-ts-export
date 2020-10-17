@@ -20,7 +20,7 @@ object ScalajsTypescriptTypesExportPlugin extends AutoPlugin {
     val generateTypescript = taskKey[File]("Generate typescript file")
     val generatePackage = taskKey[File]("Generate package.json file")
     val jsOutputName = settingKey[String]("Output js filename without extention")
-    val packageTs = taskKey[Unit]("Package all")
+    val packageTs = taskKey[File]("Package all")
   }
 
   import autoImport._
